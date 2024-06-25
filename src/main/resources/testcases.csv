@@ -1,0 +1,5 @@
+url,method,payload,expectedResponseCode
+https://reqres.in/api/users,POST,"{\"name\": \"kavinda\",\"job\": \"leader\"}",201
+https://reqres.in/api/users/2,GET,,200
+https://reqres.in/api/users/2,PUT,"{\"name\": \"medagoda\", \"job\": \"tester\"}",200
+https://reqres.in/api/users/2,DELETE,,204
