@@ -2,7 +2,7 @@
 <suite name="ApiTestSuite">
     <test name="ApiTests">
         <classes>
-            <class name="com.kbm.RestAssured.ApiTest"/>
+            <class name="api.test.ApiTest"/>
         </classes>
     </test>
 </suite>

@@ -1,5 +1,6 @@
-url,method,payload,expectedResponseCode
-https://reqres.in/api/users,POST,"{\"name\": \"kavinda\",\"job\": \"leader\"}",201
-https://reqres.in/api/users/2,GET,,200
-https://reqres.in/api/users/2,PUT,"{\"name\": \"medagoda\", \"job\": \"tester\"}",200
-https://reqres.in/api/users/2,DELETE,,204
+id,url,method,payload,expectedResponseCode,testName,expectedResponseBody,requiresAuthentication,authToken
+1,https://reqres.in/api/users,POST,"{\"name\": \"kavinda\",\"job\": \"lead\"}",201,user_creation,"{\"name\":\"kavinda\",\"job\":\"lead\"}",true,tokennnn
+2,https://reqres.in/api/users/2,GET,,200,user_retrieval,"{\"data\":{\"id\":2,\"email\":\"janet.weaver@reqres.in\",\"first_name\":\"Janet\",\"last_name\":\"Weaver\",\"avatar\":\"https://reqres.in/img/faces/2-image.jpg\"}}",false,
+3,https://reqres.in/api/users/2,PUT,"{\"name\": \"medagoda\", \"job\": \"tester\"}",200,user_update,"{\"name\":\"medagoda\",\"job\":\"tester\"}",true,tokennnn
+4,https://reqres.in/api/users/2,DELETE,,204,user_deletion,"",false,
+5,https://reqres.in/api/users/2,DELETE,,204,user_deletion_repeat,"",false,

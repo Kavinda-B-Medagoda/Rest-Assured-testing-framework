@@ -59,6 +59,14 @@
 			<version>${allure.version}</version>
 		</dependency>
 
+<!--		jsonAssert for response code read-->
+		<dependency>
+			<groupId>org.skyscreamer</groupId>
+			<artifactId>jsonassert</artifactId>
+			<version>1.5.0</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- RestAssured Dependency -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
