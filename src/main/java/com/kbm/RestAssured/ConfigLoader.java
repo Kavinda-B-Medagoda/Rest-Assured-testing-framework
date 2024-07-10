@@ -18,6 +18,12 @@ public class ConfigLoader {
             // Skip header
             for (int i = 1; i < lines.size(); i++) {
                 String[] parts = lines.get(i);
+                // Debugging output to see the contents of each line
+                System.out.println("Reading line: " + String.join(",", parts));
+                if (parts.length < 8) {
+                    System.err.println("Skipping line due to insufficient columns: " + String.join(",", parts));
+                    continue;
+                }
                 String id = parts[0].trim();
                 String url = parts[1].trim();
                 String method = parts[2].trim();
@@ -26,15 +32,17 @@ public class ConfigLoader {
                 String testName = parts[5].trim();
                 String expectedResponseBody = parts[6].trim();
                 boolean requiresAuthentication = Boolean.parseBoolean(parts[7].trim());
-                String authToken = parts[8].trim();
+                String authToken = (parts.length > 8) ? parts[8].trim() : "";
                 testCases.add(new TestCase(id, url, method, payload, expectedResponseCode, testName, expectedResponseBody, requiresAuthentication, authToken));
             }
         } catch (IOException | CsvException e) {
             e.printStackTrace();
+        } catch (NumberFormatException e) {
+            System.err.println("Error parsing number: " + e.getMessage());
+            e.printStackTrace();
         }
         return testCases;
     }
-
 
     public static class TestCase {
         private String id;
@@ -66,6 +74,7 @@ public class ConfigLoader {
         public String getAuthToken() {
             return authToken;
         }
+
         public String getId() {
             return id;
         }

@@ -1,10 +1,7 @@
 package api.test.requestFactory;
 
 import api.test.ApiRequest;
-import api.test.httpMethods.DeleteRequest;
-import api.test.httpMethods.GetRequest;
-import api.test.httpMethods.PostRequest;
-import api.test.httpMethods.PutRequest;
+import api.test.httpMethods.*;
 import com.kbm.RestAssured.ConfigLoader;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -21,10 +18,13 @@ public class ApiRequestFactory {
                 return new PutRequest();
             case "DELETE":
                 return new DeleteRequest();
+            case "PATCH":
+                return new PatchRequest();
             default:
                 throw new IllegalArgumentException("Invalid HTTP method: " + method);
         }
     }
+
     public static RequestSpecification getRequestSpecification(ConfigLoader.TestCase testCase) {
         RequestSpecBuilder specBuilder = new RequestSpecBuilder()
                 .setBaseUri(testCase.getUrl())

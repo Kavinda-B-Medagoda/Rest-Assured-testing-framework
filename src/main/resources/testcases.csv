@@ -4,3 +4,5 @@ id,url,method,payload,expectedResponseCode,testName,expectedResponseBody,require
 3,https://reqres.in/api/users/2,PUT,"{\"name\": \"medagoda\", \"job\": \"tester\"}",200,user_update,"{\"name\":\"medagoda\",\"job\":\"tester\"}",true,tokennnn
 4,https://reqres.in/api/users/2,DELETE,,204,user_deletion,"",false,
 5,https://reqres.in/api/users/2,DELETE,,204,user_deletion_repeat,"",false,
+6,https://reqres.in/api/users/2,PATCH,"{\"name\": \"medagoda\", \"job\": \"SE\"}",200,user_patch,"{\"name\":\"medagoda\",\"job\":\"SE\"}",false,
+
