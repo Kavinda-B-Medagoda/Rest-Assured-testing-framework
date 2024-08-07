@@ -1,4 +1,4 @@
-package api.test;
+package api.test.httpMethods;
 
 import com.kbm.RestAssured.ConfigLoader;
 import io.restassured.response.Response;

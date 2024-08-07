@@ -1,14 +1,14 @@
-package api.test;
+package api.test.userJourney;
 
 import com.kbm.RestAssured.ConfigLoader;
 import org.testng.annotations.Factory;
 
 import java.util.List;
 
-public class ApiTest {
-//this class is for create test cases array with ApiTestMethod objects
+public class ApiTestForUserJourney {
+    //this class is for create test cases array with ApiTestMethod objects
     private static ConfigLoader config;
-    private ApiTestMethod[] testMethods;
+    private ApiTestMethodForUserJourney[] testMethods;
 
     static {
         config = new ConfigLoader();
@@ -17,11 +17,11 @@ public class ApiTest {
     @Factory
     public Object[] createTests() {
         List<ConfigLoader.TestCase> testCases = config.loadTestCases();
-        testMethods = new ApiTestMethod[testCases.size()];
+        testMethods = new ApiTestMethodForUserJourney[testCases.size()];
 
         for (int i = 0; i < testCases.size(); i++) {
             ConfigLoader.TestCase testCase = testCases.get(i);
-            ApiTestMethod testMethod = new ApiTestMethod(testCase.getPriority(), testCase);
+            ApiTestMethodForUserJourney testMethod = new ApiTestMethodForUserJourney(testCase.getPriority(), testCase);
             testMethods[i] = testMethod;
         }
 

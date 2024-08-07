@@ -1,6 +1,5 @@
 package api.test.httpMethods;
 
-import api.test.ApiRequest;
 import com.kbm.RestAssured.ConfigLoader;
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
