@@ -5,6 +5,8 @@ import org.testng.annotations.Factory;
 
 import java.util.List;
 
+import static com.kbm.RestAssured.AuthConfig.PATH;
+
 public class ApiTest {
 //this class is for create test cases array with ApiTestMethod objects
     private static ConfigLoader config;
@@ -16,7 +18,7 @@ public class ApiTest {
 
     @Factory
     public Object[] createTests() {
-        List<ConfigLoader.TestCase> testCases = config.loadTestCases();
+        List<ConfigLoader.TestCase> testCases = config.loadTestCases(PATH);
         testMethods = new ApiTestMethod[testCases.size()];
 
         for (int i = 0; i < testCases.size(); i++) {

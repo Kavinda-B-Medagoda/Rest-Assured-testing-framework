@@ -1,6 +1,0 @@
-id,url,method,payload,expectedResponseCode,testName,expectedResponseBody,requiresAuthentication,priority
-1,http://localhost:8081/api/interview/all_interviews,GET,,200,kbm,"[ { \"interviewid\": 1, \"interviewType\": \"HR\" },{ \"interviewid\": 2, \"interviewType\": \"TECHNICAL\" },{ \"interviewid\": 3, \"interviewType\": \"TECHNICAL\" } ]",true,1
-2,http://localhost:8081/api/interview/interview-details/1,GET,,200,interview_detail_retrieval,"{\"interviewid\": 1, \"interviewType\": \"HR\", \"interviewDate\": \"2024-04-30\"}",true,2
-3,http://localhost:8081/api/candidate/hire/9,PUT,"{\"status\":\"reject\"}",200,update_hire,,true,3
-4,http://localhost:8081/api/projects/project/save,POST,"{\"project\":{\"projectName\":\"project ss\",\"projectCode\":\"16\"},\"userID\":3}",200,project_save,"{\"projectID\": 9, \"projectName\": \"project ss\", \"projectCode\": \"16\", \"users\": {\"id\": 3, \"firstName\": \"thusitha\", \"lastName\": \"dinesh\"}}",true,4
-5,http://localhost:8081/api/projects/delete/3,DELETE,,200,project_delete,,true,5

@@ -1,135 +1,193 @@
 package com.kbm.RestAssured;
 
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class ConfigLoader {
-    //this class is for load test cases from csv file and create a list
-    public List<TestCase> loadTestCases() {
+    // This class is for loading test cases from JSON or YAML files and creating a list
+
+    // Method to load test cases from either a JSON or YAML file
+    public List<TestCase> loadTestCases(String fileName) {
         List<TestCase> testCases = new ArrayList<>();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("JourneyTestCases.csv");
-             CSVReader csvReader = new CSVReader(new InputStreamReader(input))) {
-            List<String[]> lines = csvReader.readAll();
-            // Debugging output to see the contents of each line
-            System.out.println("Total lines read: " + lines.size());
 
-            // Skip header
-            for (int i = 1; i < lines.size(); i++) {
-                String[] parts = lines.get(i);
-                System.out.println("Reading line: " + String.join(",", parts));
-                if (parts.length < 9) {
-                    System.err.println("Skipping line due to insufficient columns: " + String.join(",", parts));
-                    continue;
-                }
-                try {
-                    String id = parts[0].trim();
-                    String url = parts[1].trim();
-                    String method = parts[2].trim();
-                    String payload = parts[3].trim();
-                    int expectedResponseCode = Integer.parseInt(parts[4].trim());
-                    String testName = parts[5].trim();
-                    String expectedResponseBody = parts[6].trim();
-                    boolean requiresAuthentication = Boolean.parseBoolean(parts[7].trim());
-                    int priority = Integer.parseInt(parts[8].trim());
-
-                    TestCase testCase = new TestCase(id, url, method, payload, expectedResponseCode, testName, expectedResponseBody, requiresAuthentication, priority);
-                    testCases.add(testCase);
-
-                    // Debugging output to confirm the TestCase object
-                    System.out.println("Added test case: " + testCase);
-                } catch (NumberFormatException e) {
-                    System.err.println("Error parsing number in line: " + String.join(",", parts));
-                    e.printStackTrace();
-                }
-            }
-        } catch (IOException | CsvException e) {
-            e.printStackTrace();
+        if (fileName.endsWith(".json")) {
+            testCases = loadJsonTestCases(fileName);
+        } else if (fileName.endsWith(".yaml") || fileName.endsWith(".yml")) {
+            testCases = loadYamlTestCases(fileName);
+        } else {
+            throw new IllegalArgumentException("Unsupported file type: " + fileName);
         }
 
-        // Sort test cases by priority
         Collections.sort(testCases, Comparator.comparingInt(TestCase::getPriority));
         System.out.println("Test cases sorted by priority.");
         return testCases;
     }
 
+    // Method to load test cases from a JSON file using Jackson
+    private List<TestCase> loadJsonTestCases(String fileName) {
+        List<TestCase> testCases = new ArrayList<>();
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream(fileName)) {
+            if (input == null) {
+                System.err.println("Could not find the file: " + fileName);
+                return Collections.emptyList();
+            }
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            testCases = objectMapper.readValue(input, new TypeReference<List<TestCase>>() {});
+
+            for (TestCase testCase : testCases) {
+                System.out.println("Added test case: " + testCase);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return testCases;
+    }
+
+    // Method to load test cases from a YAML file using SnakeYAML
+    private List<TestCase> loadYamlTestCases(String fileName) {
+        List<TestCase> testCases = new ArrayList<>();
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream(fileName)) {
+            if (input == null) {
+                System.err.println("Could not find the file: " + fileName);
+                return Collections.emptyList();
+            }
+
+            Yaml yaml = new Yaml();
+            List<Map<String, Object>> yamlData = yaml.load(input);
+
+            // Map YAML data to TestCase objects
+            ObjectMapper objectMapper = new ObjectMapper();
+            testCases = objectMapper.convertValue(yamlData, new TypeReference<List<TestCase>>() {});
+
+            for (TestCase testCase : testCases) {
+                System.out.println("Added test case: " + testCase);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return testCases;
+    }
+
+    // TestCase class to store information about each test case
     public static class TestCase {
-        private String id;
+        private int id;
         private String url;
         private String method;
+        @JsonDeserialize(using = JsonAsStringDeserializer.class)
         private String payload;
         private int expectedResponseCode;
         private String testName;
+
+        @JsonDeserialize(using = JsonAsStringDeserializer.class)
         private String expectedResponseBody;
         private boolean requiresAuthentication;
+        private String authToken; // Added authToken field
         private int priority;
+        private Map<String, String> saveResponse; // Added saveResponse field
 
         public TestCase() {
         }
 
-        public TestCase(String id, String url, String method, String payload, int expectedResponseCode, String testName, String expectedResponseBody, boolean requiresAuthentication, int priority) {
-            this.id = id;
-            this.url = url;
-            this.method = method;
-            this.payload = payload;
-            this.expectedResponseCode = expectedResponseCode;
-            this.testName = testName;
-            this.expectedResponseBody = expectedResponseBody;
-            this.requiresAuthentication = requiresAuthentication;
-            this.priority = priority;
-        }
-
-        public boolean requiresAuthentication() {
-            return requiresAuthentication;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public String getId() {
+        // Getters and Setters
+        public int getId() {
             return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
 
         public String getUrl() {
             return url;
         }
 
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
         public String getMethod() {
             return method;
+        }
+
+        public void setMethod(String method) {
+            this.method = method;
         }
 
         public String getPayload() {
             return payload;
         }
 
+        public void setPayload(String payload) {
+            this.payload = payload;
+        }
+
         public int getExpectedResponseCode() {
             return expectedResponseCode;
+        }
+
+        public void setExpectedResponseCode(int expectedResponseCode) {
+            this.expectedResponseCode = expectedResponseCode;
         }
 
         public String getTestName() {
             return testName;
         }
 
+        public void setTestName(String testName) {
+            this.testName = testName;
+        }
+
         public String getExpectedResponseBody() {
             return expectedResponseBody;
+        }
+
+        public void setExpectedResponseBody(String expectedResponseBody) {
+            this.expectedResponseBody = expectedResponseBody;
+        }
+
+        public boolean requiresAuthentication() {
+            return requiresAuthentication;
+        }
+
+        public void setRequiresAuthentication(boolean requiresAuthentication) {
+            this.requiresAuthentication = requiresAuthentication;
+        }
+
+        public String getAuthToken() { // New getter for authToken
+            return authToken;
+        }
+
+        public void setAuthToken(String authToken) { // New setter for authToken
+            this.authToken = authToken;
         }
 
         public int getPriority() {
             return priority;
         }
 
+        public void setPriority(int priority) {
+            this.priority = priority;
+        }
+
+        public Map<String, String> getSaveResponse() { // New getter for saveResponse
+            return saveResponse;
+        }
+
+        public void setSaveResponse(Map<String, String> saveResponse) { // New setter for saveResponse
+            this.saveResponse = saveResponse;
+        }
+
         @Override
         public String toString() {
             return "TestCase{" +
-                    "id='" + id + '\'' +
+                    "id=" + id +
                     ", url='" + url + '\'' +
                     ", method='" + method + '\'' +
                     ", payload='" + payload + '\'' +
@@ -137,7 +195,9 @@ public class ConfigLoader {
                     ", testName='" + testName + '\'' +
                     ", expectedResponseBody='" + expectedResponseBody + '\'' +
                     ", requiresAuthentication=" + requiresAuthentication +
+                    ", authToken='" + authToken + '\'' +
                     ", priority=" + priority +
+                    ", saveResponse=" + saveResponse +
                     '}';
         }
     }

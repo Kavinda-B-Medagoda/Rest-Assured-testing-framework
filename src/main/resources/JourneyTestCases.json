@@ -1,0 +1,54 @@
+[
+    {
+      "id": "1",
+      "url": "http://localhost:8081/api/projects/project/save",
+      "method": "POST",
+      "payload": {
+        "project": {
+          "projectName": "project swww",
+          "projectCode": "aaaaaaaa"
+        },
+        "userID": 3
+      },
+      "expectedResponseCode": 200,
+      "testName": "project_save",
+      "expectedResponseBody": {
+        "projectID": 25,
+        "projectName": "project swww",
+        "projectCode": "aaaaaaaa",
+        "users": {
+          "id": 3,
+          "firstName": "thusitha",
+          "lastName": "dinesh"
+        }
+      },
+      "requiresAuthentication": true,
+      "authToken": "tokennnn", 
+      "saveResponse": {
+        "projectID": "projectID"
+      },
+      "priority": 1
+    },
+    {
+      "id": "2",
+      "url": "http://localhost:8081/api/projects/{{projectID}}",
+      "method": "GET",
+      "payload": {},
+      "expectedResponseCode": 200,
+      "testName": "getProject",
+      "expectedResponseBody": {
+        "projectID": "{{projectID}}",
+        "projectName": "project swww",
+        "projectCode": "pppqq",
+        "users": {
+          "id": 3,
+          "firstName": "thusitha",
+          "lastName": "dinesh"
+        }
+      },
+      "requiresAuthentication": true,
+      "authToken": "tokennnn", 
+      "priority": 2
+    }
+  ]
+

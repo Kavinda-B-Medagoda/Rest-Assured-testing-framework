@@ -1,4 +1,0 @@
-id,url,method,payload,expectedResponseCode,testName,expectedResponseBody,requiresAuthentication,priority
-1,http://localhost:8081/api/projects/project/save,POST,"{\"project\":{\"projectName\":\"project swww\",\"projectCode\":\"pppqq\"},\"userID\":3}",200,project_save,"{\"projectID\": 5, \"projectName\": \"project swww\", \"projectCode\": \"pppqq\", \"users\": {\"id\": 3, \"firstName\": \"thusitha\", \"lastName\": \"dinesh\"}}",true,1
-2,http://localhost:8081/api/projects/{id},GET,,200,getProject,,true,2,
-3,http://localhost:8081/api/projects/delete/{id},DELETE,,200,deleteProject,,true,3,
