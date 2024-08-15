@@ -24,11 +24,6 @@ public class SpecBuilder {
             specBuilder.addHeader("Authorization", "Bearer " + token);
         }
 
-        // Replace {id} with actual projectID if present
-        String projectId = (String) context.getAttribute("projectID");
-        if (projectId != null) {
-            testCase.setUrl(testCase.getUrl().replace("{id}", projectId));
-        }
         return specBuilder.build();
     }
 }

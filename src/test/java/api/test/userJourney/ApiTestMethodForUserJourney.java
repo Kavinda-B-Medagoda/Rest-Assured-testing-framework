@@ -47,17 +47,41 @@ public class ApiTestMethodForUserJourney implements ITest {
     public void executeTest(ITestContext context) {
         try {
             // Replace placeholders in URL and payload
-            String url = replacePlaceholders(testCase.getUrl(), context);
-            String payload = replacePlaceholders(testCase.getPayload(), context);
+            logger.info("Original URL: {}", testCase.getUrl());
 
-            // Create RequestSpecification with updated URL and payload
-            RequestSpecification requestSpec = SpecBuilder.getRequestSpecification(testCase, context)
-                    .baseUri(url)
-                    .body(payload);
+            // Extract and replace placeholders in the URL
+            String url = testCase.getUrl();
+
+
+            // Replace placeholders in the URL
+            for (String key : context.getAttributeNames()) {
+                String placeholder = "{{" + key + "}}";
+                if (url.contains(placeholder)) {
+                    url = url.replace(placeholder, context.getAttribute(key).toString());
+                }
+            }
+            logger.info("Replaced URL: {}", url);
+
+            // Set path parameters if any
+//            if (url.contains("{")) {
+//                for (String key : context.getAttributeNames()) {
+//                    String placeholder = "{" + key + "}";
+//                    if (url.contains(placeholder)) {
+//                        String value = context.getAttribute(key).toString();
+////                        requestSpec.pathParam(key, value);
+//                        requestSpec.baseUri(url);
+//                    }
+//                }
+//            }
+            testCase.setUrl(url);
+            RequestSpecification requestSpec = SpecBuilder.getRequestSpecification(testCase, context);
+            // Replace placeholders in the payload
+            String payload = replacePlaceholders(testCase.getPayload(), context);
+            requestSpec.body(payload);
 
             // Execute request using ApiRequestFactory
             ApiRequest request = ApiRequestFactory.getRequest(testCase.getMethod());
-            Response response = request.executeRequest(testCase, requestSpec);
+            Response response = request.executeRequest(testCase, requestSpec.baseUri(url));
 
             // Validate response
             Assert.assertEquals(response.getStatusCode(), testCase.getExpectedResponseCode(),
@@ -114,6 +138,7 @@ public class ApiTestMethodForUserJourney implements ITest {
                 String jsonPath = entry.getKey();
                 String contextKey = entry.getValue();
                 String value = response.jsonPath().getString(jsonPath);
+                logger.info("Saving response data - {}: {}", contextKey, value);
                 context.setAttribute(contextKey, value);
             }
         }

@@ -5,17 +5,16 @@
       "method": "POST",
       "payload": {
         "project": {
-          "projectName": "project swww",
-          "projectCode": "aaaaaaaa"
+          "projectName": "nnnn",
+          "projectCode": "bbbnnnn"
         },
         "userID": 3
       },
       "expectedResponseCode": 200,
       "testName": "project_save",
       "expectedResponseBody": {
-        "projectID": 25,
-        "projectName": "project swww",
-        "projectCode": "aaaaaaaa",
+        "projectName": "nnnn",
+        "projectCode": "bbbnnnn",
         "users": {
           "id": 3,
           "firstName": "thusitha",
@@ -23,7 +22,7 @@
         }
       },
       "requiresAuthentication": true,
-      "authToken": "tokennnn", 
+      "authToken": "tokennnn",
       "saveResponse": {
         "projectID": "projectID"
       },
@@ -37,9 +36,8 @@
       "expectedResponseCode": 200,
       "testName": "getProject",
       "expectedResponseBody": {
-        "projectID": "{{projectID}}",
-        "projectName": "project swww",
-        "projectCode": "pppqq",
+        "projectName": "nnnn",
+        "projectCode": "bbbnnnn",
         "users": {
           "id": 3,
           "firstName": "thusitha",
@@ -47,8 +45,20 @@
         }
       },
       "requiresAuthentication": true,
-      "authToken": "tokennnn", 
+      "authToken": "tokennnn",
       "priority": 2
+    },
+    {
+      "id": "3",
+      "url": "http://localhost:8081/api/projects/delete/{{projectID}}",
+      "method": "DELETE",
+      "payload": {},
+      "expectedResponseCode": 200,
+      "testName": "deleteProject",
+      "expectedResponseBody": "",
+      "requiresAuthentication": true,
+      "authToken": "tokennnn",
+      "priority": 3
     }
   ]
 
